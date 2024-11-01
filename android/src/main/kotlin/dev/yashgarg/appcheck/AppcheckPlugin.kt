@@ -23,13 +23,13 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
     private lateinit var channel: MethodChannel
     private lateinit var context: Context
 
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "dev.yashgarg/appcheck")
         channel.setMethodCallHandler(this)
         context = flutterPluginBinding.applicationContext
     }
 
-    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+    override fun onMethodCall(call: MethodCall,result: Result) {
         val uriSchema: String
         when (call.method) {
             "checkAvailability" -> {
@@ -84,10 +84,10 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
         val app: MutableMap<String, Any> = HashMap()
 
         app["app_name"] =
-            info.applicationInfo.loadLabel(context.packageManager).toString()
+            info.applicationInfo!!.loadLabel(context.packageManager).toString()
         app["package_name"] = info.packageName
-        app["version_name"] = info.versionName
-        app["system_app"] = (info.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
+        app["version_name"] = info.versionName!!
+        app["system_app"] = (info.applicationInfo!!.flags and ApplicationInfo.FLAG_SYSTEM) != 0
         return app
     }
 
@@ -118,7 +118,7 @@ class AppcheckPlugin : FlutterPlugin, MethodCallHandler {
         result.error("400", "App not found $packageName", null)
     }
 
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
     }
 }
